@@ -33,11 +33,11 @@ class Minesweeper
   
   #takes an array [x, y]
   def play_tile(pos)
-    reveal(pos)
+    reveal_tiles(pos)
     #reveal returns if position has bomb or not.
   end
 
-  def reveal(pos)
+  def reveal_tiles(pos)
     #debugger
     if @board.get_tile(pos).bomb?
       game_over
