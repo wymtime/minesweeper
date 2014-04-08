@@ -23,11 +23,20 @@ class Minesweeper
 
   def play_turn
     self.display
+    puts "Select your move (flag or reveal): "
+    move = gets.chomp[0].downcase
     puts "Select your position"
     position = gets.chomp.split(' ').map {|x| x.to_i}
+    if move == 'f'
+      place_flag(position)
+    else
+      play_tile(position)
+    else #wrong move
+      play_turn
+    end
     #debugger
 
-    play_tile(position)
+    #play_tile(position)
 
   end
   
@@ -38,12 +47,10 @@ class Minesweeper
   end
 
   def reveal_tiles(pos)
-    #debugger
     if @board.get_tile(pos).bomb?
       game_over
     else
       @board.get_tile(pos).reveal
-      # self.display
     end
   end
 
@@ -72,10 +79,11 @@ class Minesweeper
 end
 #-----------------------------------------
 class Tile
-  attr_accessor :pos, :board, :bomb, :revealed, :mark
+  attr_accessor :pos, :board, :bomb, :revealed, :mark, :flagged
 
   def initialize(pos, board)
     self.bomb = false
+    self.flagged = false
     self.bomb = true if rand(10) == 1
     self.revealed = false
     self.pos = pos
