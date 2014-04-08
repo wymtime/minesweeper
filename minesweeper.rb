@@ -58,7 +58,7 @@ class Minesweeper
           if @board.get_tile([el1, el2]).bomb?
             print "B  "
           else
-            print "#{@board.get_tile([el1, el2]).bomb_count}  "
+            print "#{@board.get_tile([el1, el2]).neighbor_bomb_count}  "
           end
         else
           print "U  "
@@ -105,11 +105,15 @@ class Tile
 
   def reveal
     self.revealed = true
+    self.mark = self.neighbor_bomb_count
     self.neighbors.each do |neighbor|
-      if @board.get_tile(neighbor).neighbor_bomb_count == 0
-        @board.get_tile(neighbor).reveal
-      else
-        self.mark = self.neighbor_bomb_count
+      if !@board.get_tile(neighbor).revealed?
+        if @board.get_tile(neighbor).neighbor_bomb_count == 0
+          @board.get_tile(neighbor).reveal
+        elsif @board.get_tile(neighbor).neighbor_bomb_count > 1
+          #debugger
+          @board.get_tile(neighbor).reveal
+        end
       end
     end
   end
@@ -126,8 +130,8 @@ class Tile
 
     neighbors.select! { |rnc_pos|
                 rnc_pos[0] >= 0 && rnc_pos[0] < 9 &&
-                rnc_pos[1] >= 0 && rnc_pos[1] < 9 } &&
-                !(self.bomb?)
+                rnc_pos[1] >= 0 && rnc_pos[1] < 9 } #&&
+                #!(self.bomb?)
 
     #returns an array containing neighbor coordinates as a [x, y]
     neighbors
@@ -136,7 +140,7 @@ class Tile
   def neighbor_bomb_count
     bombs = 0
     self.neighbors.each do |neighbor|
-      p neighbor
+      #p neighbor
       if self.board.get_tile(neighbor).bomb?
         bombs += 1
       end
