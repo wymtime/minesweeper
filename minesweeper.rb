@@ -74,7 +74,7 @@ end
 class Tile
   attr_accessor :pos, :board, :bomb, :revealed, :mark
 
-  def initialize(pos)
+  def initialize(pos, board)
     self.bomb = false
     self.bomb = true if rand(10) == 1
     self.revealed = false
@@ -136,7 +136,8 @@ class Tile
   def neighbor_bomb_count
     bombs = 0
     self.neighbors.each do |neighbor|
-      if neighbor.bomb?
+      p neighbor
+      if self.board.get_tile(neighbor).bomb?
         bombs += 1
       end
     end
@@ -160,10 +161,10 @@ class Board
         if a_tile.bomb?
           #debugger
           a_tile.bomb = true
-          neighbors = a_tile.neighbors
-          neighbors.each do |neighbor|
-            @grid[neighbor[0]][neighbor[1]].neighbor_bomb_count += 1
-          end
+          # neighbors = a_tile.neighbors
+          # neighbors.each do |neighbor|
+          #   @grid[neighbor[0]][neighbor[1]].neighbor_bomb_count += 1
+          # end
           #tile.neighbor_bomb_count(board)
         end
       end
@@ -174,7 +175,7 @@ class Board
   def set_board
     (0..8).each do |row|
       (0..8).each do |col|
-        @grid[row][col] = Tile.new ([row, col])
+        @grid[row][col] = Tile.new([row, col], self)
       end
     end
   end
