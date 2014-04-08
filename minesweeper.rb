@@ -1,9 +1,10 @@
 require 'debugger'
 
 class Minesweeper
-  attr_accessor :board
+  attr_accessor :board, :game_over
   def initialize
     @board = Board.new
+    @game_over = false
     #display
   end
 
@@ -20,16 +21,16 @@ class Minesweeper
       play_turn
     end
     if win?
-      
+      puts "YOU WIN"
     else lose?
-      
+      puts "YOU LOSE"
     end
   end
   
   def over?
     if win?
       true
-    elsif lose?
+    elsif game_over
       true
     else
       false
@@ -37,8 +38,8 @@ class Minesweeper
   end
   
   def win?
-    self.board.each do |row|
-      self.row.each do |tile|
+    self.board.grid.each do |row|
+      row.each do |tile|
         if tile.bomb? and !tile.flagged?
           return false
         end
@@ -48,7 +49,7 @@ class Minesweeper
   end
   
   def lose?
-    
+    game_over
   end
 
   def play_turn
@@ -67,7 +68,6 @@ class Minesweeper
     #debugger
 
     #play_tile(position)
-
   end
   
   def place_flag(pos)
@@ -82,16 +82,16 @@ class Minesweeper
   
   #takes an array [x, y]
   def play_tile(pos)
-    reveal_tiles(pos)
-    #reveal returns if position has bomb or not.
+    if @board.get_tile(pos).bomb?
+      @game_over = true
+    else
+      reveal_tiles(pos)
+      #reveal returns if position has bomb or not.
+    end
   end
 
   def reveal_tiles(pos)
-    if @board.get_tile(pos).bomb?
-      game_over
-    else
-      @board.get_tile(pos).reveal
-    end
+    @board.get_tile(pos).reveal
   end
 
   def display
@@ -141,6 +141,10 @@ class Tile
 
   def revealed?
     self.revealed
+  end
+  
+  def flagged?
+    self.flagged
   end
 
   def bomb?
@@ -208,13 +212,7 @@ class Board
         a_tile = @grid[row][tile]
 
         if a_tile.bomb?
-          #debugger
           a_tile.bomb = true
-          # neighbors = a_tile.neighbors
-          # neighbors.each do |neighbor|
-          #   @grid[neighbor[0]][neighbor[1]].neighbor_bomb_count += 1
-          # end
-          #tile.neighbor_bomb_count(board)
         end
       end
     end
