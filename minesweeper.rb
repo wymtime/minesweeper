@@ -3,7 +3,7 @@ require 'debugger'
 class Minesweeper
   attr_accessor :board
   def initialize
-    @board = Board.new#.board
+    @board = Board.new
     #display
   end
 
@@ -30,7 +30,8 @@ class Minesweeper
     play_tile(position)
 
   end
-
+  
+  #takes an array [x, y]
   def play_tile(pos)
     reveal(pos)
     #reveal returns if position has bomb or not.
@@ -41,7 +42,7 @@ class Minesweeper
     if @board.get_tile(pos).bomb?
       game_over
     else
-      clear_field(pos)
+      @board.get_tile(pos).reveal
       # self.display
     end
   end
