@@ -54,11 +54,11 @@ class Minesweeper
   def display
     (0..8).each do |el1|
       (0..8).each do |el2|
-        if @board.board[el1][el2].revealed
-          if @board.board[el1][el2].bomb?
+        if @board.get_tile([el1, el2]).revealed
+          if @board.get_tile([el1, el2]).bomb?
             print "B  "
           else
-            print "#{@board.board[el1][el2].bomb_count}  "
+            print "#{@board.get_tile([el1, el2]).bomb_count}  "
           end
         else
           print "U  "
@@ -106,8 +106,8 @@ class Tile
   def reveal
     self.revealed = true
     self.neighbors.each do |neighbor|
-      if neighbor.neighbor_bomb_count == 0
-        neighbor.reveal
+      if @board.get_tile(neighbor).neighbor_bomb_count == 0
+        @board.get_tile(neighbor).reveal
       else
         self.mark = self.neighbor_bomb_count
       end
