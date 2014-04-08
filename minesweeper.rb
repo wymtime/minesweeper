@@ -102,23 +102,6 @@ class Tile
     self.bomb
   end
 
-  # selected_tile = @board.get_tile(pos)
-  # selected_tile.neighbors.each do |neighbor|
-  #   #debugger
-  #
-  #   next if @board.get_tile(neighbor).revealed?
-  #   if @board.get_tile(neighbor).bomb?
-  #     selected_tile.reveal
-  #
-  #   else
-  #     p neighbor
-  #     selected_tile.reveal
-  #     clear_field(neighbor)
-  #
-  #   end
-  # end
-
-  #THIS WILL EXPAND TO SHOW open spots if no neighbors are bombs
   def reveal
     self.revealed = true
     self.neighbors.each do |neighbor|
