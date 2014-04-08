@@ -15,10 +15,40 @@ class Minesweeper
 
   def run
     #until self.board.over?
-    stop = false
-    until stop
+    #stop = false
+    until self.over?
       play_turn
     end
+    if win?
+      
+    else lose?
+      
+    end
+  end
+  
+  def over?
+    if win?
+      true
+    elsif lose?
+      true
+    else
+      false
+    end
+  end
+  
+  def win?
+    self.board.each do |row|
+      self.row.each do |tile|
+        if tile.bomb? and !tile.flagged?
+          return false
+        end
+      end
+    end
+    true
+  end
+  
+  def lose?
+    
   end
 
   def play_turn
@@ -29,7 +59,7 @@ class Minesweeper
     position = gets.chomp.split(' ').map {|x| x.to_i}
     if move == 'f'
       place_flag(position)
-    else
+    elsif move == 'r'
       play_tile(position)
     else #wrong move
       play_turn
@@ -38,6 +68,16 @@ class Minesweeper
 
     #play_tile(position)
 
+  end
+  
+  def place_flag(pos)
+    if @board.get_tile(pos).flagged
+      @board.get_tile(pos).flagged = false
+      @board.get_tile(pos).mark = "U"
+    else
+      @board.get_tile(pos).mark = "F"
+      @board.get_tile(pos).flagged = true
+    end
   end
   
   #takes an array [x, y]
@@ -52,10 +92,6 @@ class Minesweeper
     else
       @board.get_tile(pos).reveal
     end
-  end
-
-  def game_over
-
   end
 
   def display
@@ -115,12 +151,13 @@ class Tile
     self.revealed = true
     self.mark = self.neighbor_bomb_count
     self.neighbors.each do |neighbor|
-      if !@board.get_tile(neighbor).revealed?
-        if @board.get_tile(neighbor).neighbor_bomb_count == 0
-          @board.get_tile(neighbor).reveal
-        elsif @board.get_tile(neighbor).neighbor_bomb_count > 1
+      a_neighbor = @board.get_tile(neighbor)
+      if !a_neighbor.revealed?
+        if a_neighbor.neighbor_bomb_count == 0 && !a_neighbor.bomb? 
+          a_neighbor.reveal
+        elsif !a_neighbor.bomb?  && a_neighbor.neighbor_bomb_count > 1
           #debugger
-          @board.get_tile(neighbor).reveal
+          a_neighbor.reveal
         end
       end
     end
